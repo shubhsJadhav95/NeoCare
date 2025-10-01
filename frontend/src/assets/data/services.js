@@ -1,0 +1,51 @@
+export const services = [
+  {
+    id: "1",
+    name: "DR.NEO",
+    desc: "An AI-powered chatbot that answers basic health-related questions 24x7. Users can ask about symptoms, medicines, diet tips, or general health advice.",
+    bgColor: "rgba(254, 182, 13, .2)",
+    textColor: "#FEB60D",
+  },
+  {
+    id: "2",
+    name: "VirtualDoc",
+    desc: "Your AI virtual doctor for quick triage and guidance. Ask about symptoms and next steps.",
+    bgColor: "rgba(151, 113, 255, .2)",
+    textColor: "#9771FF",
+  },
+  {
+    id: "3",
+    name: "Pulse Summery",
+    desc: "",
+    bgColor: "rgba(1, 181, 197, .2)",
+    textColor: "#01B5C5",
+  },
+  {
+    id: "4",
+    name: "PharmaScan",
+    desc: "",
+    bgColor: "rgba(1, 181, 197, .2)",
+    textColor: "#01B5C5",
+  },
+  {
+    id: "5",
+    name: "MedRisk",
+    desc: "",
+    bgColor: "rgba(254, 182, 13, .2)",
+    textColor: "#FEB60D",
+  },
+  {
+    id: "6",
+    name: "PharmaFast",
+    desc: "",
+    bgColor: "rgba(151, 113, 255, .2)",
+    textColor: "#9771FF",
+  },
+  {
+    id: "7",
+    name: "MedPredict",
+    desc: "",
+    bgColor: "rgba(151, 113, 255, .2)",
+    textColor: "#9771FF",
+  },
+];
