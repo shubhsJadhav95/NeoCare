@@ -13,7 +13,6 @@ import Dashboard from "../Dashboard/doctor-account/Dashboard";
 import ProtectedRoute from "./ProtectedRoute";
 import CheckoutSuccess from "../pages/CheckoutSuccess";
 import { services } from "../assets/data/services.js";
-import DiseasePage from "../components/Services/Disease/DiseasePage.jsx";
 import ForgotPassword from "../pages/ForgotPassword.jsx";
 import ResetPassword from "../pages/ResetPassword.jsx";
 
@@ -31,6 +30,11 @@ const Routers = () => {
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
 
+      <Route path="/medrisk2" element={<div>MedRisk2 Service Page</div>} />
+      <Route path="/medpredict2" element={<div>MedPredict2 Service Page</div>} />
+      <Route path="/pulsesummery2" element={<div>PulseSummery2 Service Page</div>} />
+      <Route path="/pharmafast2" element={<div>PharmaFast2 Service Page</div>} />
+      <Route path="/pharmscan2" element={<div>PharmScan2 Service Page</div>} />
 
       <Route
         path="/services"
@@ -57,14 +61,7 @@ const Routers = () => {
           </ProtectedRoute>
         }
       />
-      {/* Dynamically create routes for each disease */}
-      {services.map((service) => (
-        <Route
-          key={service.id}
-          path={`/disease/${service.id}`}
-          element={<DiseasePage service={service} />} // Pass the service data to the DiseasePage component
-        />
-      ))}
+      {/* DiseasePage routes removed due to missing component */}
     </Routes>
   );
 };
