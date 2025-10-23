@@ -6,11 +6,27 @@ import { authContext } from "../context/AuthContext";
 const ProtectedRoute = ({ children, allowedRoles }) => {
   const { token, role } = useContext(authContext);
 
-  const isAllowed = allowedRoles.includes(role);
-  const accessibleRoute =
-    token && isAllowed ? children : <Navigate to="/login" replace={true} />;
+  // If no token, redirect to login
+  if (!token) {
+    return <Navigate to="/login" replace={true} />;
+  }
 
-  return accessibleRoute;
+  // If no specific roles are required, allow access
+  if (!allowedRoles || allowedRoles.length === 0) {
+    return children;
+  }
+
+  // If specific roles are required, check if user role matches
+  const userRole = role?.toLowerCase().replace('_', '');
+  const isAllowed = allowedRoles.some(allowedRole =>
+    allowedRole.toLowerCase() === userRole
+  );
+
+  if (!isAllowed) {
+    return <Navigate to="/login" replace={true} />;
+  }
+
+  return children;
 };
 
 export default ProtectedRoute;

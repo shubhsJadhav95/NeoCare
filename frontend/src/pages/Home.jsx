@@ -16,15 +16,14 @@ import DoctorList from "../components/Doctors/DoctorList";
 import FaqList from "../components/Faq/FaqList";
 // Testimonial section removed per request
 import { useNavigate } from "react-router-dom";
-import Login from "./Login";
-import Signup from "./Signup";
 import { toast } from "react-toastify";
 
 const Home = () => {
-  const navigate = useNavigate(); // Get the navigate function from useNavigate
+  const navigate = useNavigate();
+  
   const bookAppointment = async () => {
     toast.success("Find your Doctor");
-    navigate("/doctors"); // Redirect to the /doctors route
+    navigate("/doctors");
   };
   return (
     <>
@@ -111,26 +110,6 @@ const Home = () => {
       </section>
       {/* ========== Services Section end ========== */}
 
-      {/* ========== Temporary Login/Register Feature Section ========== */}
-      <section>
-        <div className="container">
-          <div className="xl:w-[470px] mx-auto">
-            <h2 className="heading text-center">Login & Register</h2>
-            <p className="text__para text-center">
-              For demo purposes, you can login or register directly below.
-            </p>
-          </div>
-          <div className="flex flex-col md:flex-row gap-8 justify-center items-start mt-8">
-            <div className="w-full md:w-1/2">
-              <Login />
-            </div>
-            <div className="w-full md:w-1/2">
-              <Signup />
-            </div>
-          </div>
-        </div>
-      </section>
-      {/* ========== End Temporary Login/Register Feature Section ========== */}
 
       {/* Feature section removed per request */}
 

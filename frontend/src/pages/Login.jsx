@@ -24,32 +24,41 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`${BASE_URL}/auth/login`, {
-        method: "post",
+      const res = await fetch(`http://localhost:8080/auth/login`, {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
       const result = await res.json();
+      
       if (!res.ok) {
-        throw new Error(result.message);
+        throw new Error(result.message || 'Login failed');
       }
+
+      // Manually set localStorage immediately
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('role', result.role);
+      localStorage.setItem('user', JSON.stringify(result.user));
 
       dispatch({
         type: "LOGIN_SUCCESS",
         payload: {
-          user: result.data,
-          token: result.token,
+          user: result.user,
+          token: result.token || null,
           role: result.role,
         },
       });
 
       setLoading(false);
-      toast.success(result.message);
-      navigate("/home");
+      toast.success(result.message || 'Login successful!');
+      
+      // Navigate to home
+      window.location.href = '/home';
     } catch (err) {
-      toast.error(err.message);
+      console.error('Login error:', err);
+      toast.error(err.message || 'Failed to login');
       setLoading(false);
     }
   };

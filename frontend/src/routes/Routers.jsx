@@ -15,11 +15,12 @@ import CheckoutSuccess from "../pages/CheckoutSuccess";
 import { services } from "../assets/data/services.js";
 import ForgotPassword from "../pages/ForgotPassword.jsx";
 import ResetPassword from "../pages/ResetPassword.jsx";
+import UserProfile from "../pages/UserProfile";
 
 const Routers = () => {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Login />} />
       <Route path="/home" element={<Home />} />
       <Route path="/symptomchk" element={<Symptomchk />} />
       <Route path="/doctors" element={<Doctors />} />
@@ -27,6 +28,14 @@ const Routers = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Signup />} />
       <Route path="/contact" element={<Contact />} />
+      <Route
+        path="/profile"
+        element={
+          <ProtectedRoute allowedRoles={["patient", "doctor", "labassistant", "pharmacy"]}>
+            <UserProfile />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
 
@@ -39,7 +48,7 @@ const Routers = () => {
       <Route
         path="/services"
         element={
-          <ProtectedRoute allowedRoles={["patient", "doctor", "admin"]}>
+          <ProtectedRoute allowedRoles={["patient", "doctor", "admin", "labassistant", "pharmacy"]}>
             <Services />
           </ProtectedRoute>
         }
