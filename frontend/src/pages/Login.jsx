@@ -24,15 +24,22 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const res = await fetch(`http://localhost:8080/auth/login`, {
+      const res = await fetch(`${BASE_URL}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(formData),
       });
-      const result = await res.json();
-      
+
+      let result;
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        result = await res.json();
+      } else {
+        result = { message: await res.text() };
+      }
+
       if (!res.ok) {
         throw new Error(result.message || 'Login failed');
       }
@@ -53,7 +60,7 @@ const Login = () => {
 
       setLoading(false);
       toast.success(result.message || 'Login successful!');
-      
+
       // Navigate to home
       window.location.href = '/home';
     } catch (err) {

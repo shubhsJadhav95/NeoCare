@@ -16,6 +16,15 @@ import { services } from "../assets/data/services.js";
 import ForgotPassword from "../pages/ForgotPassword.jsx";
 import ResetPassword from "../pages/ResetPassword.jsx";
 import UserProfile from "../pages/UserProfile";
+import DrNeoChatbot from "../components/DrNeoChatbot";
+import PulseSummery from "../pages/PulseSummery";
+import MedPredict from "../pages/MedPredict";
+import MedRisk from "../pages/MedRisk";
+import PulseReport from "../pages/PulseReport";
+import PharmaScan from "../pages/PharmaScan";
+import PharmaMedicine from "../pages/PharmaMedicine";
+import PharmaFast from "../pages/PharmaFast";
+import PharmaStore from "../pages/PharmaStore";
 
 const Routers = () => {
   return (
@@ -36,8 +45,17 @@ const Routers = () => {
           </ProtectedRoute>
         }
       />
-      <Route path="/forgot-password" element={<ForgotPassword />} />
-      <Route path="/reset-password/:id/:token" element={<ResetPassword />} />
+      <Route path="/user/chatbotdoctorassistant" element={<DrNeoChatbot />} />
+
+      {/* User service routes */}
+      <Route path="/user/pulsesummery" element={<PulseSummery />} />
+      <Route path="/user/pulsesummery/report" element={<PulseReport />} />
+      <Route path="/user/medpredict" element={<MedPredict />} />
+      <Route path="/user/medrisk" element={<MedRisk />} />
+      <Route path="/user/pharmascan" element={<PharmaScan />} />
+      <Route path="/user/pharmascan/medicine" element={<PharmaMedicine />} />
+      <Route path="/user/pharmafast" element={<PharmaFast />} />
+      <Route path="/user/pharmafast/pharmastore" element={<PharmaStore />} />
 
       <Route path="/medrisk2" element={<div>MedRisk2 Service Page</div>} />
       <Route path="/medpredict2" element={<div>MedPredict2 Service Page</div>} />

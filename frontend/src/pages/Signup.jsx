@@ -103,7 +103,7 @@ const Signup = () => {
       const requestData = prepareFormData();
       console.log('Sending registration data:', requestData);
       
-      const res = await fetch(`http://localhost:8080/auth/register`, {
+      const res = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -113,7 +113,6 @@ const Signup = () => {
 
       let responseData;
       const contentType = res.headers.get('content-type');
-      
       if (contentType && contentType.includes('application/json')) {
         responseData = await res.json();
       } else {
