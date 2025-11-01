@@ -16,3 +16,10 @@ yarn-error.log*
 # OS files
 .DS_Store
 Thumbs.db
+
+# Ignore environment files
+.env
+*.env
+application.properties
+application.yml
+**/application.properties

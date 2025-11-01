@@ -18,6 +18,15 @@ const Signup = () => {
     photo: selectedFile,
     gender: "",
     role: "patient",
+    // Role-specific fields
+    bloodGroup: "",
+    phoneNumber: "",
+    specialization: "",
+    licenseNumber: "",
+    labName: "",
+    labRegNumber: "",
+    pharmacyName: "",
+    pharmacyRegNo: ""
   });
   const navigate = useNavigate();
 
@@ -26,39 +35,103 @@ const Signup = () => {
   };
   const handleFileInputChange = async (event) => {
     const file = event.target.files[0];
-    const data = await uploadImageToCloudinary(file);
+    
+    if (!file) return;
 
-    setPreviewUrl(data.url);
-    setSelectedFile(data.url);
-    setFormData({ ...formData, photo: data.url });
-
-    // console.log(data);
-    //late we use it
-    // console.log(file);
+    try {
+      const data = await uploadImageToCloudinary(file);
+      setPreviewUrl(data.url);
+      setSelectedFile(data.url);
+      setFormData({ ...formData, photo: data.url });
+    } catch (error) {
+      console.error('Image upload failed:', error);
+      toast.error('Image upload failed. You can continue without a photo.');
+    }
   };
+  const prepareFormData = () => {
+    const commonFields = {
+      name: formData.name,
+      email: formData.email,
+      password: formData.password,
+      photo: formData.photo || '',
+      gender: formData.gender,
+      role: formData.role.toLowerCase()
+    };
+
+    switch (formData.role.toLowerCase()) {
+      case 'patient':
+        return {
+          ...commonFields,
+          bloodGroup: formData.bloodGroup,
+          phoneNumber: formData.phoneNumber
+        };
+      case 'doctor':
+        return {
+          ...commonFields,
+          specialization: formData.specialization,
+          licenseNumber: formData.licenseNumber
+        };
+      case 'labassistant':
+        return {
+          ...commonFields,
+          labName: formData.labName,
+          labRegNumber: formData.labRegNumber
+        };
+      case 'pharmacy':
+        return {
+          ...commonFields,
+          pharmacyName: formData.pharmacyName,
+          pharmacyRegNo: formData.pharmacyRegNo
+        };
+      default:
+        return commonFields;
+    }
+  };
+
   const submitHandler = async (event) => {
-    // console.log(formData);
     event.preventDefault();
     setLoading(true);
 
+    // Validate required fields
+    if (!formData.name || !formData.email || !formData.password || !formData.gender) {
+      toast.error('Please fill in all required fields');
+      setLoading(false);
+      return;
+    }
+
     try {
+      const requestData = prepareFormData();
+      console.log('Sending registration data:', requestData);
+      
       const res = await fetch(`${BASE_URL}/auth/register`, {
-        method: "post",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(requestData),
       });
-      const { message } = await res.json();
+
+      let responseData;
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        responseData = await res.json();
+      } else {
+        responseData = { message: await res.text() };
+      }
+      
+      console.log('Server response:', responseData);
+      
       if (!res.ok) {
-        throw new Error(message);
+        const errorMsg = responseData.message || responseData.error || JSON.stringify(responseData) || 'Registration failed';
+        throw new Error(errorMsg);
       }
 
       setLoading(false);
-      toast.success(message);
-      navigate("/login");
+      toast.success(responseData.message || 'Registration successful! Please login.');
+      navigate('/login');
     } catch (err) {
-      toast.error(err.message);
+      console.error('Registration error:', err);
+      toast.error(err.message || 'Failed to register. Please try again.');
       setLoading(false);
     }
   };
@@ -122,10 +195,10 @@ const Signup = () => {
                     value={formData.role}
                     onChange={handleInputChange}
                   >
-                    <option value="select">Select</option>
                     <option value="patient">Patient</option>
                     <option value="doctor">Doctor</option>
-                    <option value="assistant">Lab Assistant</option>
+                    <option value="labAssistant">Lab Assistant</option>
+                    <option value="pharmacy">Pharmacy</option>
                   </select>
                 </label>
 
@@ -174,6 +247,129 @@ const Signup = () => {
                   </label>
                 </div>
               </div>
+
+              {/* Patient Specific Fields */}
+              {formData.role === 'patient' && (
+                <>
+                  <div className="mb-5">
+                    <input
+                      type="tel"
+                      placeholder="Phone Number"
+                      name="phoneNumber"
+                      value={formData.phoneNumber}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                  <div className="mb-5">
+                    <label className="text-headingColor font-bold text-[16px] leading-7">
+                      Blood Group:
+                    <select
+                      name="bloodGroup"
+                      value={formData.bloodGroup}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor cursor-pointer"
+                      required
+                    >
+                      <option value="">Select Blood Group</option>
+                      <option value="A+">A+</option>
+                      <option value="A-">A-</option>
+                      <option value="B+">B+</option>
+                      <option value="B-">B-</option>
+                      <option value="AB+">AB+</option>
+                      <option value="AB-">AB-</option>
+                      <option value="O+">O+</option>
+                      <option value="O-">O-</option>
+                    </select>
+                  </label>
+                </div>
+                </>
+              )}
+
+              {/* Doctor Specific Fields */}
+              {formData.role === 'doctor' && (
+                <>
+                  <div className="mb-5">
+                    <input
+                      type="text"
+                      placeholder="Specialization"
+                      name="specialization"
+                      value={formData.specialization}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                  <div className="mb-5">
+                    <input
+                      type="text"
+                      placeholder="License Number"
+                      name="licenseNumber"
+                      value={formData.licenseNumber}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Lab Assistant Specific Fields */}
+              {formData.role === 'labAssistant' && (
+                <>
+                  <div className="mb-5">
+                    <input
+                      type="text"
+                      placeholder="Lab Name"
+                      name="labName"
+                      value={formData.labName}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                  <div className="mb-5">
+                    <input
+                      type="text"
+                      placeholder="Lab Registration Number"
+                      name="labRegNumber"
+                      value={formData.labRegNumber}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                </>
+              )}
+
+              {/* Pharmacy Specific Fields */}
+              {formData.role === 'pharmacy' && (
+                <>
+                  <div className="mb-5">
+                    <input
+                      type="text"
+                      placeholder="Pharmacy Name"
+                      name="pharmacyName"
+                      value={formData.pharmacyName}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                  <div className="mb-5">
+                    <input
+                      type="text"
+                      placeholder="Pharmacy Registration Number"
+                      name="pharmacyRegNo"
+                      value={formData.pharmacyRegNo}
+                      onChange={handleInputChange}
+                      className="w-full pr-4 py-3 border-b border-solid border-[#0066ff61] focus:outline-none focus:border-b-primaryColor text-[16px] leading-7 text-headingColor placeholder:text-textColor"
+                      required
+                    />
+                  </div>
+                </>
+              )}
 
               <div className="mt-7">
                 <button
